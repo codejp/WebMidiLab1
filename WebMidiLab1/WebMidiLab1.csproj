@@ -148,6 +148,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\WebMIDIHubBuffered.cs" />
     <Compile Include="Hubs\WebMIDIHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -193,10 +194,8 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="bower_components\polymer\.bower.json" />
     <Content Include="bower_components\polymer\bower.json" />
-    <Content Include="bower_components\polymer\build.log" />
     <Content Include="bower_components\webcomponentsjs\.bower.json" />
     <Content Include="bower_components\webcomponentsjs\bower.json" />
-    <Content Include="bower_components\webcomponentsjs\build.log" />
     <Content Include="bower_components\webcomponentsjs\package.json" />
     <Content Include="bower_components\webcomponentsjs\README.md" />
     <Content Include="bower_components\x-webmidi\.bower.json" />
@@ -205,6 +204,7 @@
     <Content Include="bower_components\x-webmidi\README.md" />
     <None Include="Properties\PublishProfiles\webmidilab1 - Web Deploy.pubxml" />
     <Content Include="README.md" />
+    <None Include="Properties\PublishProfiles\WebMidiLab120160811061224 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -236,6 +236,8 @@
     <Content Include="Views\Home\Basic.cshtml" />
     <Content Include="Views\Home\Sync.cshtml" />
     <Content Include="Views\Home\SyncAdmin.cshtml" />
+    <Content Include="Views\Home\SyncBuffered.cshtml" />
+    <Content Include="Views\Home\SyncZundoko.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

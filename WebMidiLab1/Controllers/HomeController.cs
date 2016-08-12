@@ -41,5 +41,16 @@ namespace WebMidiLab1.Controllers
         {
             return View();
         }
+
+        public ActionResult SyncBuffered()
+        {
+            return View();
+        }
+
+        public ActionResult SyncZundoko()
+        {
+            return View();
+        }
+
     }
 }
