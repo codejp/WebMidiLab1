@@ -16,10 +16,14 @@
 <div style="margin-top: 20px; font-size: 1.2em">
     MIDI Input: <select id="midi-input"><option>Select ...</option></select><span id="virtual-input"></span><br /><br />
     MIDI Output: <select id="midi-output"><option>Select ...</option></select><span id="virtual-output"></span><br /><br />
+    MIDI Delay Time(ms):<input id="midi-delay" type="number" value="50" /><span id="virtual-output"></span><br /><br />
     <button id="zundokobtn" onclick="zundoko();">ずんどこぼたん</button>
 </div>
 <div id="msg" style="margin-top:30px; font-size: 1.2em"></div>
+<div id="msg2" style="margin-top:30px; font-size: 1.2em"></div>
+<div id="msg3" style="margin-top:30px; font-size: 1.2em"></div>
 <div id="zundoko" style="margin-top:30px; font-size: 1.2em"></div>
+
 @section scripts {
     <!--Script references. -->
     <!--The jQuery library is required and is referenced by default in _Layout.cshtml. -->
@@ -29,7 +33,7 @@
     <script src="~/signalr/hubs"></script>
     <!--SignalR script to update the chat page and send messages.-->
     <script>
-        var webMidi = $.connection.webMIDIHub;
+        var webMidi = $.connection.webMIDIHubBuffered;
         var bpm = 212;
         var tick = 60 / bpm * 1000 / 1;
         var tickHalf = 60 / bpm * 1000 / 2;
@@ -152,6 +156,8 @@
             var midi = { "inputs": [], "outputs": [] };
             var midiInputIndex = 0;
             var midiOutputIndex = 0;
+            var avTime = 0;
+            var avTimeList = [];
 
             // Reference the auto-generated proxy for the hub.
             //var webMidi = $.connection.webMIDIHub;
@@ -260,10 +266,14 @@
                     //$("#msg").append(("0000000" + msg1.toString(2)).substr(-8) + " ");
                     //$("#msg").append(("0000000" + msg2.toString(2)).substr(-8) + "<br />");
 
+                    var delay = $("#midi-delay")["0"].value;
+                    delay = Number.parseInt(delay);
                     // Send MIDI message
                     if (parseInt(midiOutputIndex) >= 0) {
-                        midi.outputs[midiOutputIndex].send([status, msg1, msg2]);
-                        controlChange(status, msg1, msg2);
+                        setTimeout(function () {
+                            midi.outputs[midiOutputIndex].send([status, msg1, msg2]);
+                            controlChange(status, msg1, msg2);
+                        }, delay - avTime);
                     }
                 };
 
@@ -291,6 +301,22 @@
                         $("body").css('background-color', 'rgb(' + bkcolor.r + ', ' + bkcolor.g + ', ' + bkcolor.b + ')');
                         $("#msg").append($("body").css('background-color') + "<br />");
                     }
+                }
+
+                setInterval(function () { webMidi.server.webMIDISyncThrough(Date.now()); }, 200)
+                webMidi.client.webMIDIInputSync = function (tick) {
+                    var val = Date.now() - tick;
+                    avTimeList.push(val);
+                    if (avTimeList.length > 5) {
+                        var t = 0;
+                        avTimeList.forEach(function (_) { t += _; });
+                        avTime = Math.trunc(t / avTimeList.length);
+                        avTimeList = [];
+                    }
+                    $("#msg2").empty();
+                    $("#msg2").append(val + " ms");
+                    $("#msg3").empty();
+                    $("#msg3").append(avTime + " ms");
                 }
 
                 $.connection.hub.start().done();
